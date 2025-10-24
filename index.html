@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birb Generator</title>
+    <style>
+        /* A clean, simple style */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f7f9fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 25px 40px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1DA1F2;
+            /* A bird-like blue */
+            margin-top: 0;
+        }
+
+        h2 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            color: #555;
+        }
+
+        /* --- Birb Selector (Checkboxes) --- */
+        #birb-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        /* Hide the actual checkbox */
+        .birb-option input[type="checkbox"] {
+            display: none;
+        }
+
+        /* Style the label to look like a button */
+        .birb-option label {
+            display: inline-block;
+            font-size: 2.5rem;
+            /* Big emojis */
+            padding: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s ease, background-color 0.2s;
+            user-select: none;
+            /* Prevents text selection on click */
+            border: 2px solid transparent;
+        }
+
+        .birb-option label:hover {
+            transform: scale(1.1);
+            background-color: #f0f0f0;
+        }
+
+        /* Style for when the checkbox is checked */
+        .birb-option input[type="checkbox"]:checked+label {
+            background-color: #e1f5fe;
+            border-color: #81d4fa;
+            transform: scale(1.1);
+        }
+
+        /* --- Controls --- */
+        .controls,
+        .generation,
+        .output-area {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .controls label {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        input[type="number"] {
+            font-size: 1.1rem;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 100px;
+        }
+
+        button {
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #generate-btn {
+            background-color: #1DA1F2;
+            color: white;
+        }
+
+        #generate-btn:hover {
+            background-color: #1a91da;
+        }
+
+        .selector-btn {
+            background-color: #f0f0f0;
+            color: #555;
+        }
+
+        .selector-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* --- Output Area --- */
+        textarea {
+            width: 100%;
+            min-height: 180px;
+            font-size: 1.5rem;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+            resize: vertical;
+            box-sizing: border-box;
+            line-height: 1.6;
+        }
+
+        #copy-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        #copy-btn:hover {
+            background-color: #218838;
+        }
+
+        #copy-feedback {
+            margin-left: 10px;
+            color: #28a745;
+            font-weight: 600;
+            display: none;
+            /* Hidden by default */
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        footer a {
+            color: #1DA1F2;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Media Query for Mobile --- */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+                min-height: 0;
+            }
+
+            .container {
+                padding: 20px 15px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            .birb-option label {
+                font-size: 2.2rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            input[type="number"] {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .controls .selector-btn,
+            #generate-btn {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .output-area {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #copy-btn {
+                width: 100%;
+            }
+
+            #copy-feedback {
+                margin-left: 0;
+                text-align: center;
+                margin-top: 8px;
+            }
+
+            footer {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>🐦‍🔥 Birbmoji Generator 🦩</h1>
+
+        <h2>Step 1: Pick Your Birbs</h2>
+        <div id="birb-selector">
+        </div>
+        <div class="controls">
+            <button id="select-all" class="selector-btn">Select All Birbs</button>
+            <button id="select-none" class="selector-btn">Select No Birbs (why?)</button>
+        </div>
+
+        <h2>Step 2: How Many Birbs?</h2>
+        <div class="controls">
+            <label for="birb-length">Blorb Count:</label>
+            <input type="number" id="birb-length" value="30" min="1" max="2000">
+        </div>
+
+        <h2>Step 3: Go!</h2>
+        <div class="generation">
+            <button id="generate-btn">Release the Flock!</button>
+        </div>
+
+        <h2>Your Freshly Generated Birb String</h2>
+        <textarea id="output-birbs" readonly placeholder="Your birbs will appear here..."></textarea>
+        <div class="output-area">
+            <button id="copy-btn">Copy Flock to Clipboard</button>
+            <span id="copy-feedback">Copied! 👍</span>
+        </div>
+
+        <footer>
+            Birbmoji Generator was flapped into existence by <a href="https://www.linkedin.com/in/matthewfcarroll/"
+                target="_blank" rel="noopener noreferrer">Birb Uncle Matthew</a>. Dedicated to my favourite blorbs,
+            Sheila & Gill.
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. The Birbs ---
+            const BIRBS = [
+                "🐦", "🐤", "🐧", "🐔", "🐣", "🐥", "🦉", "🕊️", "🦅", "🐦‍🔥",
+                "🦜", "🐦‍⬛", "🦃", "🪿", "🦩", "🐓", "🦆", "🦢", "🦤", "🦚",
+                "🪶", "🪽"
+            ];
+
+            // --- 2. Get DOM Elements ---
+            const birbSelector = document.getElementById('birb-selector');
+            const birbLengthInput = document.getElementById('birb-length');
+            const generateBtn = document.getElementById('generate-btn');
+            const outputTextarea = document.getElementById('output-birbs');
+            const copyBtn = document.getElementById('copy-btn');
+            const selectAllBtn = document.getElementById('select-all');
+            const selectNoneBtn = document.getElementById('select-none');
+            const copyFeedback = document.getElementById('copy-feedback');
+
+            // --- 3. Populate Birb Selector ---
+            function populateBirbs() {
+                BIRBS.forEach(birb => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'birb-option';
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = `birb-${birb}`;
+                    checkbox.value = birb;
+                    checkbox.checked = true; // Default to all selected
+                    checkbox.className = 'birb-checkbox';
+
+                    const label = document.createElement('label');
+                    label.htmlFor = `birb-${birb}`;
+                    label.textContent = birb;
+                    label.title = `Select ${birb}`; // Amusing tooltip
+
+                    optionDiv.appendChild(checkbox);
+                    optionDiv.appendChild(label);
+                    birbSelector.appendChild(optionDiv);
+                });
+            }
+
+            // Get all checkboxes (helper function)
+            function getAllCheckboxes() {
+                return document.querySelectorAll('.birb-checkbox');
+            }
+
+            // --- 4. Add Event Listeners ---
+
+            // Generate Button
+            generateBtn.addEventListener('click', () => {
+                // Get all *checked* birbs
+                const checkedBoxes = document.querySelectorAll('.birb-checkbox:checked');
+                const selectedBirbs = Array.from(checkedBoxes).map(box => box.value);
+
+                // Handle no selection
+                if (selectedBirbs.length === 0) {
+                    alert('You must select at least one birb, you silly goose! 🪿');
+                    return;
+                }
+
+                // Get length
+                const length = parseInt(birbLengthInput.value, 10);
+                if (length < 1) {
+                    alert('Please enter a positive number of birbs!');
+                    return;
+                }
+
+                // Generate the random string
+                let resultString = '';
+                for (let i = 0; i < length; i++) {
+                    const randomIndex = Math.floor(Math.random() * selectedBirbs.length);
+                    resultString += selectedBirbs[randomIndex];
+                }
+
+                // Display the result
+                outputTextarea.value = resultString;
+            });
+
+            // Copy Button
+            copyBtn.addEventListener('click', () => {
+                if (outputTextarea.value.length === 0) {
+                    alert("Nothing to copy yet. Generate some birbs first!");
+                    return;
+                }
+
+                // Use modern Clipboard API
+                navigator.clipboard.writeText(outputTextarea.value).then(() => {
+                    // Show feedback
+                    copyFeedback.style.display = 'block';
+                    // Hide feedback after 2 seconds
+                    setTimeout(() => {
+                        copyFeedback.style.display = 'none';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                    alert('Failed to copy. Please try again or copy manually.');
+                });
+            });
+
+            // Select All / None Buttons
+            selectAllBtn.addEventListener('click', () => {
+                getAllCheckboxes().forEach(box => box.checked = true);
+            });
+
+            selectNoneBtn.addEventListener('click', () => {
+                getAllCheckboxes().forEach(box => box.checked = false);
+            });
+
+            // --- 5. Initial Call ---
+            populateBirbs();
+
+        });
+    </script>
+</body>
+
+</html>
